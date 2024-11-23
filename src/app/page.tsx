@@ -21,9 +21,13 @@ export default function Main() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: id }),
       }).then(async (e) => {
-        const res = await e.json();
-        if (res.data.id != id) {
-          //회원가입 로직
+        const { success } = await e.json();
+        if (!success) {
+          await fetch("api/sign", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id, name: name, balance: 1000 }),
+          });
         }
       });
 
