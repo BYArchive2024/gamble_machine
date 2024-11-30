@@ -1,8 +1,9 @@
 "use client";
 import { AlertDialog } from "@/components/dialog";
-import { Typography, TextField } from "@mui/material";
+import {Typography, TextField, } from "@mui/material";
 import { useTransitionRouter } from "next-view-transitions";
-import { useCallback, useState } from "react";
+import {KeyboardEvent, ChangeEvent, useCallback, useState} from "react";
+import {palette} from "@mui/system";
 
 export default function Main() {
   const router = useTransitionRouter();
@@ -14,37 +15,38 @@ export default function Main() {
 
   const handleSubmit = useCallback(async () => {
     try {
-      if (!name || !id)
-        return setDialogState((prev) => ({ ...prev, blank: true }));
-      await fetch(`/api/verify`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: id }),
-      }).then(async (e) => {
-        const { success } = await e.json();
-        if (!success) {
-          await fetch("api/sign", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: id, name: name, balance: 1000 }),
-          });
-        }
-      });
+      //when test this code block is useless
+      // if (!name || !id)
+      //   return setDialogState((prev) => ({ ...prev, blank: true }));
+      // await fetch(`/api/verify`, {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ id: id }),
+      // }).then(async (e) => {
+      //   const { success } = await e.json();
+      //   if (!success) {
+      //     await fetch("api/sign", {
+      //       method: "POST",
+      //       headers: { "Content-Type": "application/json" },
+      //       body: JSON.stringify({ id: id, name: name, balance: 0 }),
+      //     });
+      //   }
+      // });
 
       router.push("/game");
     } catch (error) {
       console.error("Error fetching user:", error);
     }
-  }, [id, name, router]);
+  }, [router]);
 
-  const handleIdChange = useCallback((e: any) => setId(e.target.value), []);
-  const handleNameChange = useCallback((e: any) => {
+  const handleIdChange = useCallback((e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => setId(e.target.value), []);
+  const handleNameChange = useCallback((e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const value = e.target.value;
     if (/^[ㄱ-ㅎ가-힣\b]*$/.test(value)) setName(value);
   }, []);
 
   const handleKeyDown = useCallback(
-    (e: any) => e.key === "Enter" && handleSubmit(),
+    (e: KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && handleSubmit(),
     [handleSubmit]
   );
 
@@ -61,7 +63,7 @@ export default function Main() {
             )
           }
         />
-        <Typography variant="h4" textAlign="center">
+        <Typography className="text-indigo-400" variant="h4" textAlign="center">
           로그인
         </Typography>
         <TextField
@@ -94,7 +96,7 @@ export default function Main() {
           }}
         />
         <div
-          className="mt-3 text-center p-3 bg-orange-300 rounded-xl cursor-pointer select-none hover:bg-orange-400"
+          className="mt-3 text-center p-3 text-black bg-purple-300 rounded-xl cursor-pointer select-none hover:bg-purple-400"
           onClick={() => handleSubmit()}
         >
           확인
