@@ -3,7 +3,6 @@ import { AlertDialog } from "@/components/dialog";
 import {Typography, TextField, } from "@mui/material";
 import { useTransitionRouter } from "next-view-transitions";
 import {KeyboardEvent, ChangeEvent, useCallback, useState} from "react";
-import {palette} from "@mui/system";
 
 export default function Main() {
   const router = useTransitionRouter();
@@ -33,13 +32,16 @@ export default function Main() {
       //   }
       // });
 
-      router.push("/game");
+      router.push("/ready");
     } catch (error) {
       console.error("Error fetching user:", error);
     }
   }, [router]);
 
-  const handleIdChange = useCallback((e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => setId(e.target.value), []);
+  const handleIdChange = useCallback((e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    if (e.target.value.length > 5) return;
+    setId(e.target.value)
+  }, []);
   const handleNameChange = useCallback((e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const value = e.target.value;
     if (/^[ㄱ-ㅎ가-힣\b]*$/.test(value)) setName(value);

@@ -3,7 +3,7 @@
 import {ReactNode} from "react";
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import {indigo, green} from "@mui/material/colors";
+import {indigo, deepPurple} from "@mui/material/colors";
 
 export default function RootLayout({children,}: Readonly<{
     children: ReactNode;
@@ -15,7 +15,7 @@ export default function RootLayout({children,}: Readonly<{
                 main: indigo[400],
             },
             secondary: {
-                main: green[500],
+                main: deepPurple[200],
             },
         },
     });
