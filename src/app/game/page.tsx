@@ -38,24 +38,26 @@ export default function Game() {
         (userChoice === "odd" && result % 2 !== 0) ||
         (userChoice === "even" && result % 2 === 0);
       setTimeout(() => {
-        setGameStatus(
-          isWin ? "승리! 돈을 얻었습니다." : "패배! 돈을 잃었습니다."
-        );
-      }, 1700);
+        document.startViewTransition(() => {
+          setGameStatus(
+            isWin ? "승리! 돈을 얻었습니다." : "패배! 돈을 잃었습니다."
+          );
+        });
+      }, 1300);
     },
     [userChoice]
   );
 
   const rollDice = useCallback(() => {
-    const result = rollManipulatedDice();
-    if (result !== null) {
-      setDiceResult(result);
-      checkWinner(result);
-      setRolling(true);
-      setTimeout(() => {
+    setRolling(true);
+    setTimeout(() => {
+      const result = rollManipulatedDice();
+      if (result !== null) {
+        setDiceResult(result);
+        checkWinner(result);
         setRolling(false);
-      }, 800);
-    }
+      }
+    }, 1000);
   }, [rollManipulatedDice, checkWinner]);
 
   const handleChoice = useCallback((choice: "odd" | "even") => {
@@ -77,7 +79,12 @@ export default function Game() {
       >
         <Typography
           variant="h5"
-          sx={{ marginBottom: 3, color: userChoice === null ? "red" : "white" }}
+          sx={{
+            marginBottom: 3,
+            color: userChoice === null ? "red" : "white",
+            opacity: rolling ? 0.5 : 1,
+            transition: "opacity 1s ease-in",
+          }}
         >
           {gameStatus}
         </Typography>
