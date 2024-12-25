@@ -11,5 +11,27 @@ export async function POST(req: NextRequest) {
     }
   );
   const { success } = await res.json();
-  if (success) return NextResponse.json({ success: true });
+  if (success) {
+    const response = NextResponse.json({ success: true });
+
+    response.cookies.set({
+      name: "id",
+      value: data.id,
+      secure: true,
+    });
+
+    response.cookies.set({
+      name: "usr_name",
+      value: data.name,
+      secure: true,
+    });
+
+    response.cookies.set({
+      name: "balance",
+      value: data.balance,
+      secure: true,
+    });
+
+    return response;
+  }
 }

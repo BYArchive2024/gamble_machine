@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { ViewTransitions } from "next-view-transitions";
 import "./globals.css";
-import {ReactNode} from "react";
-import ThemeProvider from "@/components/ThemeProvider"
+import { ReactNode } from "react";
+import ThemeProvider from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "아카이브 도박장",
@@ -14,18 +14,17 @@ export default function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-
   return (
     <ViewTransitions>
-      <html>
+      <html lang="ko">
         <body>
-        <ThemeProvider>
-          <div className="flex items-center justify-center">
-            <div style={{ aspectRatio: "10/16", height: "100vh" }}>
-              {children}
+          <ThemeProvider>
+            <div className="flex items-center justify-center">
+              <div style={{ aspectRatio: "10/16", height: "100vh" }}>
+                {children}
+              </div>
             </div>
-          </div>
-        </ThemeProvider>
+          </ThemeProvider>
         </body>
       </html>
     </ViewTransitions>

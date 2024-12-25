@@ -1,11 +1,25 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Box, Typography, Container } from "@mui/material";
 import { Link } from "next-view-transitions";
 
 const HomePage = () => {
-  const [userBalance, setUserBalance] = useState(3.25);
+  const [userBalance, setUserBalance] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserBalance = async () => {
+      try {
+        const response = await fetch(`/api/info?id=21112`);
+        const data = await response.json();
+        setUserBalance(data.user.balance);
+      } catch (error) {
+        console.error("Error fetching user balance:", error);
+      }
+    };
+
+    fetchUserBalance();
+  }, []);
 
   return (
     <Container
@@ -26,7 +40,8 @@ const HomePage = () => {
           TITLE NAME
         </Typography>
         <Typography variant="h6" sx={{ marginTop: 2 }}>
-          현재 가상화폐 잔액: {userBalance.toFixed(2)} BTC
+          현재 가상화폐 잔액:{" "}
+          {userBalance !== null ? userBalance : "Loading..."} BTC
         </Typography>
       </Box>
 
