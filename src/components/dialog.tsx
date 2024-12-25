@@ -20,6 +20,8 @@ interface AlertProps {
   content: string;
   ishome?: boolean;
   setClose: () => void;
+  onConfirm?: () => void;
+  onCancel?: () => void;
 }
 
 const Transition = forwardRef(function Transition(
@@ -37,13 +39,15 @@ export function AlertDialog({
   content,
   ishome,
   setClose,
+  onConfirm,
+  onCancel,
 }: AlertProps) {
   return (
     <Dialog
+      closeAfterTransition={false}
       open={open}
       TransitionComponent={Transition}
       keepMounted
-      onClose={setClose}
       sx={{
         "& .MuiDialog-paper": {
           borderRadius: "12px",
@@ -63,13 +67,15 @@ export function AlertDialog({
         >
           {title}
         </DialogTitle>
-        <IconButton onClick={setClose}>
-          <CancelIcon
-            color="error"
-            fontSize="large"
-            sx={{ cursor: "pointer" }}
-          />
-        </IconButton>
+        {!onCancel && !onConfirm && (
+          <IconButton onClick={setClose}>
+            <CancelIcon
+              color="error"
+              fontSize="large"
+              sx={{ cursor: "pointer" }}
+            />
+          </IconButton>
+        )}
       </div>
       <Divider />
       <DialogContent sx={{ padding: "10px 20px" }}>
@@ -81,19 +87,28 @@ export function AlertDialog({
           {content}
         </Typography>
       </DialogContent>
-      {!ishome && (
-        <DialogActions>
-          <Link href="/">
-            <Button
-              variant="outlined"
-              color="error"
-              sx={{ fontFamily: "Paperlogy-8ExtraBold" }}
-            >
-              홈으로 가기
-            </Button>
-          </Link>
-        </DialogActions>
-      )}
+      <DialogActions>
+        {onCancel && (
+          <Button
+            variant="outlined"
+            color="error"
+            sx={{ fontFamily: "Paperlogy-8ExtraBold" }}
+            onClick={onCancel}
+          >
+            그만두기
+          </Button>
+        )}
+        {onConfirm && (
+          <Button
+            variant="outlined"
+            color="primary"
+            sx={{ fontFamily: "Paperlogy-8ExtraBold" }}
+            onClick={onConfirm}
+          >
+            다음 라운드
+          </Button>
+        )}
+      </DialogActions>
     </Dialog>
   );
 }

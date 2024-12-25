@@ -14,6 +14,8 @@ import {
   harderProblem,
   demonProblem,
 } from "./problems";
+import { AlertDialog } from "./dialog";
+import { useTransitionRouter } from "next-view-transitions";
 
 const problems = [
   easyProblem,
@@ -33,18 +35,17 @@ export default function Puzzle() {
   const [timeLeft, setTimeLeft] = useState<number>(100);
   const [timeDuration, setTimeDuration] = useState<number>(0);
   const [currentProblemIndex, setCurrentProblemIndex] = useState<number>(0);
+  const [showResultDialog, setShowResultDialog] = useState<boolean>(false);
+  const router = useTransitionRouter();
   const timer = useRef<any>(null);
 
   const failed = () => {
     clearInterval(timer.current);
-    alert("Time out!");
   };
 
   const passed = () => {
     clearInterval(timer.current);
-    if (currentProblemIndex < problems.length - 1) {
-      setCurrentProblemIndex((prev) => prev + 1);
-    }
+    setShowResultDialog(true);
   };
 
   const startNewRound = (problemIndex: number) => {
@@ -81,6 +82,18 @@ export default function Puzzle() {
 
   const handleClick = (letter: string) => {
     if (letter === answer) passed();
+  };
+
+  const handleConfirm = () => {
+    setShowResultDialog(false);
+    if (currentProblemIndex < problems.length - 1) {
+      setCurrentProblemIndex((prev) => prev + 1);
+    }
+  };
+
+  const handleCancel = () => {
+    setShowResultDialog(false);
+    document.startViewTransition(() => router.push("/ready"));
   };
 
   return (
@@ -126,6 +139,14 @@ export default function Puzzle() {
           ))
         )}
       </Grid2>
+      <AlertDialog
+        title="ㄷㄷ"
+        open={showResultDialog}
+        content={"다음 문제로 넘어갈까요?"}
+        setClose={() => setShowResultDialog(false)}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </div>
   );
 }

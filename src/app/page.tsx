@@ -117,6 +117,11 @@ export default function Main() {
         >
           확인
         </div>
+        <div className="font-paperlogy text-base text-gray-500 whitespace-pre-line">
+          {
+            "이용이 처음이어도 본인 학번과 이름 입력 후 확인 버튼을 클릭하면\n 회원가입이 자동으로 진행됩니다.\n\n선생님들은 이용하실 수 없습니다."
+          }
+        </div>
       </div>
     </div>
   );
