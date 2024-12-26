@@ -2,15 +2,17 @@
 
 import React, { useState, useEffect } from "react";
 import { Button, Box, Typography, Container } from "@mui/material";
+import { useCookies } from 'next-client-cookies';
 import { Link } from "next-view-transitions";
 
 const HomePage = () => {
   const [userBalance, setUserBalance] = useState<string | null>(null);
+  const cookies = useCookies();
 
   useEffect(() => {
     const fetchUserBalance = async () => {
       try {
-        const response = await fetch(`/api/info?id=21112`);
+        const response = await fetch(`/api/info?id=${await cookies.get("id")}`);
         const data = await response.json();
         setUserBalance(data.user.balance);
       } catch (error) {
