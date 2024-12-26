@@ -1,10 +1,7 @@
+"use client";
+
 import React, { useState, useEffect, useRef } from "react";
-import {
-  Button,
-  Grid2,
-  LinearProgress,
-  Typography,
-} from "@mui/material";
+import { Button, Grid2, LinearProgress, Typography } from "@mui/material";
 import {
   easyProblem,
   normalProblem,
@@ -14,6 +11,7 @@ import {
 } from "./problems";
 import { AlertDialog } from "./dialog";
 import { useTransitionRouter } from "next-view-transitions";
+import { useCookies } from "next-client-cookies";
 
 const problems = [
   easyProblem,
@@ -33,17 +31,23 @@ export default function Puzzle() {
   const [timeLeft, setTimeLeft] = useState<number>(100);
   const [timeDuration, setTimeDuration] = useState<number>(0);
   const [currentProblemIndex, setCurrentProblemIndex] = useState<number>(0);
-  const [showResultDialog, setShowResultDialog] = useState<boolean>(false);
+  const [dialogState, setDialogState] = useState({
+    failed: false,
+    result: false,
+    clear: false,
+  });
   const router = useTransitionRouter();
   const timer = useRef<NodeJS.Timeout | null>(null);
+  const cookies = useCookies();
 
   const failed = () => {
     clearInterval(timer.current as NodeJS.Timeout);
+    setDialogState((prev) => ({ ...prev, failed: true }));
   };
 
   const passed = () => {
     clearInterval(timer.current as NodeJS.Timeout);
-    setShowResultDialog(true);
+    setDialogState((prev) => ({ ...prev, result: true }));
   };
 
   const startNewRound = (problemIndex: number) => {
@@ -82,16 +86,40 @@ export default function Puzzle() {
     if (letter === answer) passed();
   };
 
-  const handleConfirm = () => {
-    setShowResultDialog(false);
+  const handlePassedConfirm = () => {
+    setDialogState((prev) => ({ ...prev, result: false }));
     if (currentProblemIndex < problems.length - 1) {
       setCurrentProblemIndex((prev) => prev + 1);
+    } else {
+      setDialogState((prev) => ({ ...prev, clear: true }));
     }
   };
 
-  const handleCancel = () => {
-    setShowResultDialog(false);
+  const handlePassedCancel = async () => {
+    setDialogState((prev) => ({ ...prev, result: false }));
+    const prev = Number(cookies.get("balance")) || 0;
+    cookies.set(
+      "balance",
+      Math.floor(prev * problems[currentProblemIndex].multiplier).toString()
+    );
+    await fetch("/api/update");
     document.startViewTransition(() => router.push("/ready"));
+  };
+
+  const handleFailedCancel = async () => {
+    setDialogState((prev) => ({ ...prev, failed: false }));
+    const prev = Number(cookies.get("balance")) || 0;
+    cookies.set("balance", Math.floor(prev * 0.5).toString());
+    await fetch("/api/update");
+    document.startViewTransition(() => router.push("/ready"));
+  };
+
+  const handleClearBtn = async () => {
+    setDialogState((prev) => ({ ...prev, clear: false }));
+    const prev = Number(cookies.get("balance")) || 0;
+    cookies.set("balance", Math.floor(prev * 3.0).toString());
+    await fetch("/api/update");
+    document.startViewTransition(() => router.push("/"));
   };
 
   return (
@@ -126,7 +154,7 @@ export default function Puzzle() {
                   "&:hover": {
                     backgroundColor: "white",
                   },
-                  fontSize: currentProblemIndex == 4 ? 13 : 20,
+                  fontSize: currentProblemIndex > 3 ? 13 : 20,
                   fontFamily: "Paperlogy-8ExtraBold",
                 }}
                 onClick={() => handleClick(letter)}
@@ -138,12 +166,23 @@ export default function Puzzle() {
         )}
       </Grid2>
       <AlertDialog
+        title="ㅋㅋ"
+        open={dialogState.failed}
+        content={"조금만 더 빨리 찾아보세요ㅋ"}
+        onCancel={handleFailedCancel}
+      />
+      <AlertDialog
+        title="WTF"
+        open={dialogState.clear}
+        content={"어케함"}
+        onClear={handleClearBtn}
+      />
+      <AlertDialog
         title="ㄷㄷ"
-        open={showResultDialog}
+        open={dialogState.result}
         content={"다음 문제로 넘어갈까요?"}
-        setClose={() => setShowResultDialog(false)}
-        onConfirm={handleConfirm}
-        onCancel={handleCancel}
+        onConfirm={handlePassedConfirm}
+        onCancel={handlePassedCancel}
       />
     </div>
   );

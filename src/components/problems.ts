@@ -8,34 +8,40 @@ export interface ProbelmSet {
   letters: string[];
   boundary: number;
   time_limit: number;
+  multiplier: number;
 }
 
 export const easyProblem: ProbelmSet = {
   letters: easy,
   boundary: 2,
   time_limit: 8,
+  multiplier: 1.1,
 };
 
 export const normalProblem: ProbelmSet = {
   letters: normal,
   boundary: 3,
   time_limit: 4,
+  multiplier: 1.2,
 };
 
 export const hardProblem: ProbelmSet = {
   letters: hard,
   boundary: 4,
   time_limit: 4,
+  multiplier: 1.5,
 };
 
 export const harderProblem: ProbelmSet = {
   letters: harder,
   boundary: 5,
   time_limit: 3,
+  multiplier: 2,
 };
 
 export const demonProblem: ProbelmSet = {
   letters: demon,
   boundary: 5,
   time_limit: 2,
+  multiplier: 5,
 };

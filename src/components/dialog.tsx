@@ -18,9 +18,10 @@ interface AlertProps {
   open: boolean;
   content: string;
   ishome?: boolean;
-  setClose: () => void;
+  setClose?: () => void;
   onConfirm?: () => void;
   onCancel?: () => void;
+  onClear?: () => void;
 }
 
 const Transition = forwardRef(function Transition(
@@ -39,6 +40,7 @@ export function AlertDialog({
   setClose,
   onConfirm,
   onCancel,
+  onClear,
 }: AlertProps) {
   return (
     <Dialog
@@ -65,7 +67,7 @@ export function AlertDialog({
         >
           {title}
         </DialogTitle>
-        {!onCancel && !onConfirm && (
+        {!onCancel && !onConfirm && !onClear && (
           <IconButton onClick={setClose}>
             <CancelIcon
               color="error"
@@ -76,7 +78,7 @@ export function AlertDialog({
         )}
       </div>
       <Divider />
-      <DialogContent sx={{ padding: "10px 20px" }}>
+      <DialogContent sx={{ padding: "10px 20px", whiteSpace: "pre-line" }}>
         <Typography
           variant="h6"
           textAlign="center"
@@ -104,6 +106,16 @@ export function AlertDialog({
             onClick={onConfirm}
           >
             다음 라운드
+          </Button>
+        )}
+        {onClear && (
+          <Button
+            variant="outlined"
+            color="success"
+            sx={{ fontFamily: "Paperlogy-8ExtraBold" }}
+            onClick={onConfirm}
+          >
+            축하드립니다.
           </Button>
         )}
       </DialogActions>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Button, Box, Typography, Container } from "@mui/material";
-import { useCookies } from 'next-client-cookies';
+import { useCookies } from "next-client-cookies";
 import { Link } from "next-view-transitions";
 
 const HomePage = () => {
@@ -39,11 +39,11 @@ const HomePage = () => {
     >
       <Box sx={{ textAlign: "center", marginTop: 3 }}>
         <Typography variant="h3" component="h1">
-          TITLE NAME
+          Archive 도박장
         </Typography>
         <Typography variant="h6" sx={{ marginTop: 2 }}>
           현재 가상화폐 잔액:{" "}
-          {userBalance !== null ? userBalance : "Loading..."} BTC
+          {userBalance !== null ? userBalance : "Loading..."} KBC
         </Typography>
       </Box>
 
@@ -58,7 +58,16 @@ const HomePage = () => {
       </Link>
 
       <Box sx={{ textAlign: "center", marginBottom: 3 }}>
-        <Typography variant="body2">게임 설명 및 규칙</Typography>
+        <Link href="/rule">
+          <Typography
+            variant="body2"
+            style={{
+              color: "skyblue",
+            }}
+          >
+            게임 설명 및 규칙
+          </Typography>
+        </Link>
       </Box>
     </Container>
   );

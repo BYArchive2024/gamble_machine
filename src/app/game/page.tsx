@@ -1,27 +1,28 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Container } from "@mui/material";
 import Countdown from "@/components/countdown";
 import Puzzle from "@/components/puzzle";
 
 export default function GamePage() {
-  const [countdown, setCountdown] = useState(3);
+  const [count, setCount] = useState(3);
   const [gameStarted, setGameStarted] = useState(false);
-  const workerRef = useRef<Worker | null>(null);
-
-  useEffect(() => {
-    workerRef.current = new Worker(new URL("./worker.js", import.meta.url));
-    workerRef.current.postMessage({ type: "startTimer", value: 3000 });
-
-    workerRef.current.onmessage = (event) => {
-      if (event.data.type === "updateTime") {
-        setCountdown(event.data.value / 1000);
-      } else if (event.data.type === "timeout") {
+  const callback = useCallback(
+    (id: NodeJS.Timeout) => {
+      if (count > 0) {
+        setCount(count - 1);
+      } else {
+        clearInterval(id);
         setGameStarted(true);
       }
-    };
-  }, []);
+    },
+    [count]
+  );
+  useEffect(() => {
+    let id = setInterval(() => callback(id), 1000);
+    return () => clearInterval(id);
+  }, [callback]);
 
   return (
     <Container
@@ -35,7 +36,7 @@ export default function GamePage() {
         textAlign: "center",
       }}
     >
-      {!gameStarted ? <Countdown countdown={countdown} /> : <Puzzle />}
+      {!gameStarted ? <Countdown countdown={count} /> : <Puzzle />}
     </Container>
   );
 }
