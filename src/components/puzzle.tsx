@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  Box,
   Button,
-  duration,
   Grid2,
   LinearProgress,
   Typography,
@@ -37,21 +35,21 @@ export default function Puzzle() {
   const [currentProblemIndex, setCurrentProblemIndex] = useState<number>(0);
   const [showResultDialog, setShowResultDialog] = useState<boolean>(false);
   const router = useTransitionRouter();
-  const timer = useRef<any>(null);
+  const timer = useRef<NodeJS.Timeout | null>(null);
 
   const failed = () => {
-    clearInterval(timer.current);
+    clearInterval(timer.current as NodeJS.Timeout);
   };
 
   const passed = () => {
-    clearInterval(timer.current);
+    clearInterval(timer.current as NodeJS.Timeout);
     setShowResultDialog(true);
   };
 
   const startNewRound = (problemIndex: number) => {
     const ps = problems[problemIndex];
     const pos = getRandomInt(ps.boundary);
-    let ori: string[][] = Array.from({ length: ps.boundary }, () =>
+    const ori: string[][] = Array.from({ length: ps.boundary }, () =>
       Array(ps.boundary).fill(ps.letters[0])
     );
     ori[pos[0]][pos[1]] = ps.letters[1];
@@ -77,7 +75,7 @@ export default function Puzzle() {
 
   useEffect(() => {
     startNewRound(currentProblemIndex);
-    return () => clearInterval(timer.current);
+    return () => clearInterval(timer.current as NodeJS.Timeout);
   }, [currentProblemIndex]);
 
   const handleClick = (letter: string) => {

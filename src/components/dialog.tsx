@@ -12,7 +12,6 @@ import {
 import { TransitionProps } from "@mui/material/transitions";
 import { forwardRef } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { Link } from "next-view-transitions";
 
 interface AlertProps {
   title: string;
@@ -26,7 +25,7 @@ interface AlertProps {
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
-    children: React.ReactElement<any, any>;
+    children: React.ReactElement<unknown, any>;
   },
   ref: React.Ref<unknown>
 ) {
@@ -37,7 +36,6 @@ export function AlertDialog({
   title,
   open,
   content,
-  ishome,
   setClose,
   onConfirm,
   onCancel,
