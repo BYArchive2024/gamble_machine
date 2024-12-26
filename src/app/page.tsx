@@ -26,7 +26,7 @@ export default function Main() {
           await fetch("api/sign", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: id, name: name, balance: 0 }),
+            body: JSON.stringify({ id: id, name: name, balance: 500 }),
           });
         }
       });
